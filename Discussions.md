@@ -61,3 +61,36 @@
 ### History & Data
 - View Chat History
 
+## Admin (System Management) Use Cases
+- Login
+- Logout
+- Manage Users
+- View System Logs
+- Configure Agent Settings
+
+## Backend / System Use Cases
+
+### Authentication
+- Authenticate User
+
+### Data Handling
+- Store Data
+- Retrieve Data
+
+### Execution Engine
+- Execute Command
+- Capture Output
+- Execute Backend Task
+
+## External Systems Use Cases
+
+### Auth Service
+- Authenticate User
+
+### Database
+- Store Data
+- Retrieve Data
+
+### External Backend Agent
+- Execute Backend Task
+
