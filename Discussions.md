@@ -1,13 +1,27 @@
-# Date- 19/1/25
-### Discussed about Scope & Actors 
-- Finalize the list of Actors and Use Cases  based on  project requirements.
-- Primary Actor: The Developer/User (who asks questions and uploads files).
-- Secondary/System Actors: Based on  "System Requirements," these could include the LLM API (OpenAI/Gemini) and other APIs and Compilers.
+# Date: 19/1/25
 
-### Making a rough UML diagram
-   ![alt text](image.png)
+## Discussed about Scope & Actors
 
-### Work Distribution
-- Abhas: Identifying Use Cases
-- Aniruddha: Identifying Actors
-- Abhinav: Preparing the corresponding Diagram
+- Finalize the list of Actors and Use Cases based on project requirements
+- **Primary Actor:** The Developer/User (who asks questions and uploads files)
+- **Secondary/System Actors:** Based on "System Requirements", these could include the LLM API (OpenAI/Gemini) and other APIs and Compilers
+
+## Making a rough UML diagram
+
+![alt text](image.png)
+
+## Work Distribution
+
+| Team Member | Task |
+|---|---|
+| Abhas | Identifying Use Cases |
+| Aniruddha | Identifying Actors |
+| Abhinav | Preparing the corresponding Diagram |
+
+## Actors
+
+- User (Developer / Student)
+- Admin (System Management)
+- Auth Service
+- Database
+- External Backend Agent
