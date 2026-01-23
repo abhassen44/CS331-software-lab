@@ -94,3 +94,28 @@
 ### External Backend Agent
 - Execute Backend Task
 
+
+## Relationships
+
+### 1. «include» Relationships (Mandatory)
+
+*These are required steps. If you do A, you must do B.*
+
+- Login «include» Authenticate User
+- Register «include» Authenticate User
+- Run / Compile Code «include» Execute Command
+- Run / Compile Code «include» Capture Output
+- Schedule Task «include» Define Task Trigger
+
+
+### 2. «extend» Relationships (Optional) 
+
+*These are optional steps. The arrow points FROM the extra step TO the main step.*
+Register «include» Authenticate User
+
+- Refine Question «extend» Ask Coding Question
+- Provide Context «extend» Ask Coding Question
+- Debug Errors «extend» Explain Code (You only debug if the explanation reveals errors.)
+- Import from GitHub «extend» Analyze Repository
+- Index Local Files «extend» Analyze Repository
+
