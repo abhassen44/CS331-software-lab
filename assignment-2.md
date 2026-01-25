@@ -58,4 +58,4 @@ Use Case Diagram
 
 https://www.canva.com/design/DAG-1Fzju_o/n1pzYmuTzrvcmuvWtsP4fQ/edit
 
-![alt text](<Screenshot 2026-01-25 232627.png>)
+![alt text](image-1.png)
