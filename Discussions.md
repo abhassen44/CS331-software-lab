@@ -16,7 +16,7 @@
 Rough diagrams created during the discussion:
 
 - ![UML diagram](image.png)
-- ![UCL diagram](i2.png)
+- ![UCL diagram](i2.png)A
 
 ## Work Distribution
 
@@ -128,4 +128,6 @@ Rough diagrams created during the discussion:
 - The diagrams are draft versions; diagrams should be refined into a proper UML/UCL using a modeling tool.
 - Confirm any missing actors or system integrations before finalizing the use-case model.
 
+
+now i am making a separate final file for assignment 2
 
