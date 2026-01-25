@@ -1,105 +1,112 @@
-# Date: 19/1/25
+# Project Discussions
 
-## Discussed about Scope & Actors
+**Date:** 2025-01-19
 
-- Finalize the list of Actors and Use Cases based on project requirements
-- **Primary Actor:** The Developer/User (who asks questions and uploads files) 
-- **Secondary/System Actors:** Based on "System Requirements", these could include the LLM API (OpenAI/Gemini) and other APIs and Compilers
+## Summary
+- Finalize scope, actors, and primary use cases for the project.
+- Produce a rough UML/UCL diagram and distribute work among team members.
 
-## Making a rough UML diagram
+## Scope & Actors
 
-![alt text](image.png)
+- **Primary Actor:** Developer / Student — asks questions, uploads files, runs code.
+- **Secondary/System Actors:** LLM API (OpenAI/Gemini), Auth service, Database, External backend agent, Execution engine.
+
+## UML / Diagrams
+
+Rough diagrams created during the discussion:
+
+- ![UML diagram](image.png)
+- ![UCL diagram](i2.png)
 
 ## Work Distribution
 
 | Team Member | Task |
-|------------|------|
-| Abhas | Identifying Use Cases |
-| Aniruddha | Identifying Actors |
-| Abhinav | Preparing the corresponding Diagram |
+|------------:|------|
+| Abhas      | Identify use cases |
+| Aniruddha  | Identify actors |
+| Abhinav    | Prepare diagrams |
 
 ## Actors
 
 - User (Developer / Student)
-- Admin (System Management) 
+- Admin (System Management)
 - Auth Service
 - Database
 - External Backend Agent
 
-## User (Developer / Student) Use Cases
+## Use Cases
 
-### Account & Profile
+### User (Developer / Student)
+
+#### Account & Profile
 - Login
-- Register 
-- Manage Profile
+- Register
+- Manage profile
 - Logout
 
-### Coding & AI Assistance
-- Ask Coding Question
-- Refine Question
-- Provide Context
-- Generate Code
-- Explain Code
-- Debug Errors
+#### Coding & AI Assistance
+- Ask coding question
+- Refine question
+- Provide context
+- Generate code
+- Explain code
+- Debug errors
 
-### Code Execution
-- Run / Compile Code
-- Create Files
+#### Code Execution
+- Run / compile code
+- Create files
 
-### Task Automation
-- Automate Tasks
-- Schedule Task
-- Define Task Trigger
-- View Active Tasks
+#### Task Automation
+- Automate tasks
+- Schedule tasks
+- Define task triggers
+- View active tasks
 
-### File & Repository Handling
-- Upload Files
-- Analyze Repository
+#### File & Repository Handling
+- Upload files
+- Analyze repository
 - Import from GitHub
-- Index Local Files
+- Index local files
 
-### History & Data
-- View Chat History
+#### History & Data
+- View chat history
 
-## Admin (System Management) Use Cases
-- Login
-- Logout
-- Manage Users
-- View System Logs
-- Configure Agent Settings
+### Admin (System Management)
+- Login / Logout
+- Manage users
+- View system logs
+- Configure agent settings
 
-## Backend / System Use Cases
+### Backend / System
 
-### Authentication
-- Authenticate User
+#### Authentication
+- Authenticate user
 
-### Data Handling
-- Store Data
-- Retrieve Data
+#### Data Handling
+- Store data
+- Retrieve data
 
-### Execution Engine
-- Execute Command
-- Capture Output
-- Execute Backend Task
+#### Execution Engine
+- Execute commands
+- Capture output
+- Execute backend tasks
 
-## External Systems Use Cases
+### External Systems
 
-### Auth Service
-- Authenticate User
+#### Auth Service
+- Authenticate user
 
-### Database
-- Store Data
-- Retrieve Data
+#### Database
+- Store data
+- Retrieve data
 
-### External Backend Agent
-- Execute Backend Task
-
+#### External Backend Agent
+- Execute backend tasks
 
 ## Relationships
 
-### 1. «include» Relationships (Mandatory)
-
-*These are required steps. If you do A, you must do B.*
+### Include (mandatory)
+*If action A occurs, action B must also occur.*
 
 - Login «include» Authenticate User
 - Register «include» Authenticate User
@@ -107,17 +114,18 @@
 - Run / Compile Code «include» Capture Output
 - Schedule Task «include» Define Task Trigger
 
-
-### 2. «extend» Relationships (Optional) 
-
-*These are optional steps. The arrow points FROM the extra step TO the main step.*
-Register «include» Authenticate User
+### Extend (optional)
+*Optional behaviors that may augment main use cases.*
 
 - Refine Question «extend» Ask Coding Question
 - Provide Context «extend» Ask Coding Question
-- Debug Errors «extend» Explain Code (You only debug if the explanation reveals errors.)
+- Debug Errors «extend» Explain Code (debugging follows explanation when errors are found)
 - Import from GitHub «extend» Analyze Repository
 - Index Local Files «extend» Analyze Repository
 
-i make a rough UCL diagram
-![alt text](i2.png)
+## Notes
+
+- The diagrams are draft versions; diagrams should be refined into a proper UML/UCL using a modeling tool.
+- Confirm any missing actors or system integrations before finalizing the use-case model.
+
+
