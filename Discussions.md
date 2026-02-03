@@ -129,7 +129,6 @@ Rough diagrams created during the discussion:
 - Confirm any missing actors or system integrations before finalizing the use-case model.
 
 
-<<<<<<< Updated upstream
 now i am making a separate final file for assignment 2
 
 
@@ -143,5 +142,21 @@ now i am making a separate final file for assignment 2
 There is only one process at this level, representing the entire application as a "black box."
 
 **0.0 Intelligent Coding Agent:** This single circle represents your entire software. All the internal logic we saw in Level 1 (like "Process Coding Requests," "Manage Files," and the internal "Database") is hidden inside this circle. It receives inputs, processes them using its internal logic, and produces outputs.
-=======
->>>>>>> Stashed changes
+
+---
+
+### 2. External Entities (The Interactors)
+
+These entities exist **outside the system boundary** and interact with the Intelligent Coding Agent by providing inputs or receiving outputs.
+
+**CUSTOMER:**  
+The end user of the system who submits coding-related questions, problem statements, and requests for code solutions. The Customer receives generated code, explanations, and responses from the Intelligent Coding Agent.
+
+**ADMIN:**  
+The system administrator who interacts with the Intelligent Coding Agent to perform administrative and management tasks such as configuring system settings, monitoring system behavior, or viewing high-level logs.
+
+**AUTH SERVICE:**  
+An external authentication and authorization service responsible for verifying user credentials. It receives authentication requests from the Intelligent Coding Agent and returns validation responses or security tokens to ensure secure access.
+
+**BACKEND SYSTEM:**  
+An external system or service that supports the Intelligent Coding Agent by handling computationally intensive tasks, external data retrieval, or integration with third-party services. The Intelligent Coding Agent delegates such tasks to this system and receives the processed results.
