@@ -131,3 +131,14 @@ Rough diagrams created during the discussion:
 
 now i am making a separate final file for assignment 2
 
+
+# Assignment 3
+
+## UML Level 0 DFD
+
+### Components of System Boundary
+
+#### 1. Process (The System)
+There is only one process at this level, representing the entire application as a "black box."
+
+**0.0 Intelligent Coding Agent:** This single circle represents your entire software. All the internal logic we saw in Level 1 (like "Process Coding Requests," "Manage Files," and the internal "Database") is hidden inside this circle. It receives inputs, processes them using its internal logic, and produces outputs.
