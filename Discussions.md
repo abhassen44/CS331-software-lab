@@ -16,7 +16,7 @@
 Rough diagrams created during the discussion:
 
 - ![UML diagram](image.png)
-- ![UCL diagram](i2.png)A
+- ![UCL diagram](i2.png)
 
 ## Work Distribution
 
@@ -106,7 +106,7 @@ Rough diagrams created during the discussion:
 ## Relationships
 
 ### Include (mandatory)
-*If action A occurs, action B must also occur.*
+
 
 - Login «include» Authenticate User
 - Register «include» Authenticate User
@@ -115,7 +115,7 @@ Rough diagrams created during the discussion:
 - Schedule Task «include» Define Task Trigger
 
 ### Extend (optional)
-*Optional behaviors that may augment main use cases.*
+
 
 - Refine Question «extend» Ask Coding Question
 - Provide Context «extend» Ask Coding Question
@@ -129,6 +129,7 @@ Rough diagrams created during the discussion:
 - Confirm any missing actors or system integrations before finalizing the use-case model.
 
 
+<<<<<<< Updated upstream
 now i am making a separate final file for assignment 2
 
 
@@ -142,3 +143,5 @@ now i am making a separate final file for assignment 2
 There is only one process at this level, representing the entire application as a "black box."
 
 **0.0 Intelligent Coding Agent:** This single circle represents your entire software. All the internal logic we saw in Level 1 (like "Process Coding Requests," "Manage Files," and the internal "Database") is hidden inside this circle. It receives inputs, processes them using its internal logic, and produces outputs.
+=======
+>>>>>>> Stashed changes
