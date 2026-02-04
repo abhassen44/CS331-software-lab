@@ -15,8 +15,8 @@
 
 Rough diagrams created during the discussion:
 
-- ![UML diagram](image.png)
-- ![UCL diagram](i2.png)
+- ![UML diagram](./images/uml0.png)
+- ![UCL diagram](./images/uml1.png)
 
 ## Work Distribution
 

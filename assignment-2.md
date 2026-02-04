@@ -56,7 +56,7 @@
 
 Design (Canva): https://www.canva.com/design/DAG-1Fzju_o/n1pzYmuTzrvcmuvWtsP4fQ/edit?utm_content=DAG-1Fzju_o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
-![Use Case Diagram](image-2.png)
+![Use Case Diagram](./images/umlFinal.png)
 
 ---
 
