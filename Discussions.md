@@ -178,3 +178,8 @@ The System sends "Auth Requests" and receives "Auth Responses" from the Auth Ser
 
 **Backend Processing:**  
 The System sends "Backend Task & Data Requests" and receives processed "Backend Task & Data" from the Backend System.
+
+### UML DFD Level 0 Dig
+
+![alt text](image-1.png)
+
