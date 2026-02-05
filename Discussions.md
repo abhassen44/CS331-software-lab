@@ -183,7 +183,10 @@ The System sends "Backend Task & Data Requests" and receives processed "Backend 
 
 ![alt text](./images/DFDlevel0.png)
 
-### UML DFD LEVEL 1 DESCRIPTION
+
+---
+
+## UML DFD LEVEL 1 DESCRIPTION
 
 ### External Entities (Detailed)
 
@@ -222,15 +225,16 @@ Handles file uploads, repository analysis, GitHub imports, and local file indexi
 **5.0 Manage API Operations:**  
 Manages interactions with external APIs, including authentication, LLM service calls, and backend task delegation.
 
+---
+
 ### Data Stores
 
-- D1 – User Data
+- **D1** – User Data
+- **D2** – Coding History
+- **D3** – Task & Automation Data
+- **D6** – System Logs & Config
 
-- D2 – Coding History
-
-- D3 – Task & Automation Data
-
-- D6 – System Logs & Config
+---
 
 ### Data Flows (Major)
 
@@ -247,3 +251,12 @@ Manages interactions with external APIs, including authentication, LLM service c
 - Repository structure, file metadata, file status
 
 - Logs, configuration data, admin commands
+
+---
+
+### System Boundary
+
+The outer rectangle enclosing all processes and data stores represents the system scope.
+
+### UML DFD Level 1 Diagram
+![alt text](<images/UML DFD level 1.png>)
