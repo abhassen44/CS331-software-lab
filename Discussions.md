@@ -221,3 +221,29 @@ Handles file uploads, repository analysis, GitHub imports, and local file indexi
 
 **5.0 Manage API Operations:**  
 Manages interactions with external APIs, including authentication, LLM service calls, and backend task delegation.
+
+### Data Stores
+
+- D1 – User Data
+
+- D2 – Coding History
+
+- D3 – Task & Automation Data
+
+- D6 – System Logs & Config
+
+### Data Flows (Major)
+
+- Login credentials, authentication status
+
+- Profile data, verified user identity
+
+- Code questions, prompts, context
+
+- Generated code, explanations, suggestions
+
+- Execution commands, scripts, task schedules
+
+- Repository structure, file metadata, file status
+
+- Logs, configuration data, admin commands
