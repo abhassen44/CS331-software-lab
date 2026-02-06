@@ -260,3 +260,72 @@ The outer rectangle enclosing all processes and data stores represents the syste
 
 ### UML DFD Level 1 Diagram
 ![alt text](<images/UML DFD level 1.png>)
+
+# UML Class Diagram Analysis
+
+## Part B, Q1: Identification of Key Classes, Attributes, and Functionalities
+
+Below are the key classes identified from the diagram, categorized by their role (Controllers vs. Entities), along with their attributes, methods, and visibility.
+
+### Legend for Visibility:
+- `+` : Public
+- `-` : Private
+
+## 1. Controller Classes (The Logic)
+These classes handle the processing and main operations of the system.
+
+### A. Class: UserManager
+
+**Role:** Manages user authentication and profile data.
+
+**Attributes:**
+- `- authService: IAuthService` (Private)
+
+**Methods (Functionalities):**
+- `+ login(credentials: Credentials): AuthStatus` (Public)
+- `+ updateProfile(userId: ID, data: ProfileData): void` (Public)
+- `+ verifyIdentity(token: Token): UserIdentity` (Public)
+- `+ getUserData(userId: ID): User` (Public)
+- `+ storeUserData(user: User): void` (Public)
+
+### B. Class: CodingController
+
+**Role:** Handles the core coding assistance logic (processing prompts, generating code).
+
+**Attributes:**
+- (None explicitly shown in diagram)
+
+**Methods (Functionalities):**
+- `+ processRequest(userId: ID, prompt: String, context: Context): CodeResponse` (Public)
+- `+ generateCode(...)` (Public)
+- `+ explainCode(...)` (Public)
+- `+ suggestImprovements(...)` (Public)
+- `+ storeHistory(request: CodeRequest, response: CodeResponse): void` (Public)
+- `+ getHistory(userId: ID): CodingHistory` (Public)
+
+### C. Class: TaskExecutionController
+
+**Role:** Manages the execution of backend commands and automated tasks.
+
+**Attributes:**
+- `- backendAgent: IExternalBackendAgent` (Private)
+
+**Methods (Functionalities):**
+- `+ runCommand(userId: ID, command: Command): ExecutionResult` (Public)
+- `+ scheduleTask(userId: ID, task: Task): void` (Public)
+- `+ createAutomationRule(userId: ID, rule: AutomationRule): void` (Public)
+- `+ getTaskStatus(taskId: ID): TaskStatus` (Public)
+- `+ storeTaskData(task: Task): void` (Public)
+
+### D. Class: AdminController
+
+**Role:** Handles administrative system operations.
+
+**Attributes:**
+- (None explicitly shown in diagram)
+
+**Methods (Functionalities):**
+- `+ executeAdminCommand(adminId: ID, command: Command): Result` (Public)
+- `+ updateSystemConfig(config: SystemConfig): void` (Public)
+- `+ getSystemLogs(): LogList` (Public)
+- `+ manageUsers(action: Action, targetUserId: ID): void` (Public)
