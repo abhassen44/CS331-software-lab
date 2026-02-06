@@ -2,109 +2,402 @@
 
 **Date:** 2025-01-19
 
-# Assignment 3
-
 ## Summary
-- Create UML DFD Level 0 and Level 1 for the Intelligent Coding Agent.
-- Identify external entities, processes, data stores, and major data flows.
-- Extract key classes, attributes, and methods for class-diagram analysis.
-- Produce diagrams and finalize assignment file.
+- Finalize scope, actors, and primary use cases for the project.
+- Produce a rough UML/UCL diagram and distribute work among team members.
+
+## Scope & Actors
+
+- **Primary Actor:** Developer / Student — asks questions, uploads files, runs code.
+- **Secondary/System Actors:** LLM API (OpenAI/Gemini), Auth service, Database, External backend agent, Execution engine.
+
+## UML / Diagrams
+
+Rough diagrams created during the discussion:
+
+- ![UML diagram](./images/uml0.png)
+- ![UCL diagram](./images/uml1.png)
+
+## Work Distribution
+
+| Team Member | Task |
+|------------:|------|
+| Abhas      | Identify use cases |
+| Aniruddha  | Identify actors |
+| Abhinav    | Prepare diagrams |
+
+## Actors
+
+- User (Developer / Student)
+- Admin (System Management)
+- Auth Service
+- Database
+- External Backend Agent
+
+## Use Cases
+
+### User (Developer / Student)
+
+#### Account & Profile
+- Login
+- Register
+- Manage profile
+- Logout
+
+#### Coding & AI Assistance
+- Ask coding question
+- Refine question
+- Provide context
+- Generate code
+- Explain code
+- Debug errors
+
+#### Code Execution
+- Run / compile code
+- Create files
+
+#### Task Automation
+- Automate tasks
+- Schedule tasks
+- Define task triggers
+- View active tasks
+
+#### File & Repository Handling
+- Upload files
+- Analyze repository
+- Import from GitHub
+- Index local files
+
+#### History & Data
+- View chat history
+
+### Admin (System Management)
+- Login / Logout
+- Manage users
+- View system logs
+- Configure agent settings
+
+### Backend / System
+
+#### Authentication
+- Authenticate user
+
+#### Data Handling
+- Store data
+- Retrieve data
+
+#### Execution Engine
+- Execute commands
+- Capture output
+- Execute backend tasks
+
+### External Systems
+
+#### Auth Service
+- Authenticate user
+
+#### Database
+- Store data
+- Retrieve data
+
+#### External Backend Agent
+- Execute backend tasks
+
+## Relationships
+
+### Include (mandatory)
+
+
+- Login «include» Authenticate User
+- Register «include» Authenticate User
+- Run / Compile Code «include» Execute Command
+- Run / Compile Code «include» Capture Output
+- Schedule Task «include» Define Task Trigger
+
+### Extend (optional)
+
+
+- Refine Question «extend» Ask Coding Question
+- Provide Context «extend» Ask Coding Question
+- Debug Errors «extend» Explain Code (debugging follows explanation when errors are found)
+- Import from GitHub «extend» Analyze Repository
+- Index Local Files «extend» Analyze Repository
+
+## Notes
+
+- The diagrams are draft versions; diagrams should be refined into a proper UML/UCL using a modeling tool.
+- Confirm any missing actors or system integrations before finalizing the use-case model.
+
+
+now i am making a separate final file for assignment 2
+
+
+# Assignment 3
 
 ## UML Level 0 DFD
 
 ### Components of System Boundary
 
-1. Process (The System)  
-    - Intelligent Coding Agent — represents the entire application as a single process (black box).
+### 1. Process (The System)
+There is only one process at this level, representing the entire application as a "black box."
 
-2. External Entities (Interactors)  
-    - Customer: submits coding requests, receives code and explanations.  
-    - Admin: performs administrative tasks and monitoring.  
-    - Auth Service: external authentication/authorization provider.  
-    - Backend System: handles compute-intensive tasks, execution, and third-party integrations.
-
-3. Data Flows (High-Level)  
-    - User Requests ↔ Code Solutions & Assistance  
-    - Admin Management Requests  
-    - Auth Requests ↔ Auth Responses  
-    - Backend Task & Data Requests ↔ Processed Backend Data
-
-![DFD Level 0](./images/DFDlevel0.png)
+**Intelligent Coding Agent:** 
+This single circle represents your entire software. All the internal logic we saw in Level 1 (like "Process Coding Requests," "Manage Files," and the internal "Database") is hidden inside this circle. It receives inputs, processes them using its internal logic, and produces outputs.
 
 ---
 
-## UML DFD Level 1 Description
+### 2. External Entities (The Interactors)
+
+These entities exist **outside the system boundary** and interact with the Intelligent Coding Agent by providing inputs or receiving outputs.
+
+**Customer:**  
+The end user of the system who submits coding-related questions, problem statements, and requests for code solutions. The Customer receives generated code, explanations, and responses from the Intelligent Coding Agent.
+
+**Admin:**  
+The system administrator who interacts with the Intelligent Coding Agent to perform administrative and management tasks such as configuring system settings, monitoring system behavior, or viewing high-level logs.
+
+**Auth Service:**  
+An external authentication and authorization service responsible for verifying user credentials. It receives authentication requests from the Intelligent Coding Agent and returns validation responses or security tokens to ensure secure access.
+
+**Backend System:**  
+An external system or service that supports the Intelligent Coding Agent by handling computationally intensive tasks, external data retrieval, or integration with third-party services. The Intelligent Coding Agent delegates such tasks to this system and receives the processed results.
+
+---
+
+### 3. Data Flows (High-Level Interactions)
+These show the broad movement of information across the system boundary.
+
+**User Interactions:**  
+The Customer sends "User Requests" and receives "Code Solutions & Assistance".
+
+**Admin Interactions:**  
+The Admin sends "Admin Management Requests" (the response flow is implied or bundled into the system's operation here).
+
+**Security Check:**  
+The System sends "Auth Requests" and receives "Auth Responses" from the Auth Service.
+
+**Backend Processing:**  
+The System sends "Backend Task & Data Requests" and receives processed "Backend Task & Data" from the Backend System.
+
+### UML DFD Level 0 Dig
+
+![alt text](./images/DFDlevel0.png)
+
+
+---
+
+## UML DFD LEVEL 1 DESCRIPTION
 
 ### External Entities (Detailed)
-- User (Developer/Student): submits questions, uploads files, requests execution.  
-- Admin: manages users, settings, and views logs.  
-- Auth Service: verifies credentials, issues tokens.  
-- Database: stores user data, history, files, configs.  
-- External Agent / Backend: executes code, runs automations, integrates with LLMs/GitHub.
 
-### Processes (High-Level)
-1.0 Manage User Access & Profile — registration, login, profile, logout.  
-2.0 Process Coding Request — refine prompts, generate/explain code.  
-3.0 Execute & Automate Tasks — run/compile code, capture output, schedule tasks.  
-4.0 Manage Files & Repository — upload, analyze, import, index.  
-5.0 Manage API Operations — auth, LLM calls, backend delegation.
+**User:**  
+The end user (Developer/Student) who submits coding questions, uploads files, and requests code generation, debugging, and execution assistance.
 
-### Data Stores
-- D1 – User Data  
-- D2 – Coding History  
-- D3 – Task & Automation Data  
-- D6 – System Logs & Config
+**Admin:**  
+The system administrator who manages users, configures system settings, views logs, and oversees system operations.
 
-### Major Data Flows
-- Credentials ↔ Auth status  
-- Profile & identity data  
-- Prompts, context, generated code, explanations  
-- Execution commands, outputs, schedules  
-- Repository metadata, file contents  
-- Logs and configuration data
+**Auth Service:**  
+An external authentication service that verifies user credentials and manages authorization tokens for secure access.
 
-![UML DFD Level 1](<images/UML DFD level 1.png>)
+**Database:**  
+An external data storage system responsible for persisting user data, chat history, code files, and system configurations.
+
+**External Agent / Backend:**  
+An external backend system that handles computationally intensive tasks, code execution, task automation, and integration with third-party services like GitHub or LLM APIs.
 
 ---
+
+### Processes (High-Level Operations)
+
+**1.0 Manage User Access & Profile:**  
+Handles user registration, login, profile management, and logout functionality.
+
+
+**2.0 Process Coding Request:**  
+Receives coding questions, refines context, generates code solutions, and provides code explanations using AI assistance.
+
+**3.0 Execute & Automate Tasks:**  
+Executes user code, compiles programs, captures output, and manages task scheduling with defined triggers.
+
+**4.0 Manage Files & Repository:**  
+Handles file uploads, repository analysis, GitHub imports, and local file indexing.
+
+**5.0 Manage API Operations:**  
+Manages interactions with external APIs, including authentication, LLM service calls, and backend task delegation.
+
+---
+
+### Data Stores
+
+- **D1** – User Data
+- **D2** – Coding History
+- **D3** – Task & Automation Data
+- **D6** – System Logs & Config
+
+---
+
+### Data Flows (Major)
+
+- Login credentials, authentication status
+
+- Profile data, verified user identity
+
+- Code questions, prompts, context
+
+- Generated code, explanations, suggestions
+
+- Execution commands, scripts, task schedules
+
+- Repository structure, file metadata, file status
+
+- Logs, configuration data, admin commands
+
+---
+
+### System Boundary
+
+The outer rectangle enclosing all processes and data stores represents the system scope.
+
+### UML DFD Level 1 Diagram
+![alt text](<images/UML DFD level 1.png>)
 
 # UML Class Diagram Analysis
 
-## Part B, Q1: Key Classes, Attributes, and Methods
+## Part B, Q1: Identification of Key Classes, Attributes, and Functionalities
 
-Legend: + public, - private
+Below are the key classes identified from the diagram, categorized by their role (Controllers vs. Entities), along with their attributes, methods, and visibility.
 
-1. Controller Classes
+### Legend for Visibility:
+- `+` : Public
+- `-` : Private
 
-A. UserManager  
-- Attributes: - authService: IAuthService  
-- Methods: + login(credentials): AuthStatus, + updateProfile(userId, data), + verifyIdentity(token), + getUserData(userId), + storeUserData(user)
+## 1. Controller Classes (The Logic)
+These classes handle the processing and main operations of the system.
 
-B. CodingController  
-- Methods: + processRequest(userId, prompt, context): CodeResponse, + generateCode(...), + explainCode(...), + suggestImprovements(...), + storeHistory(request, response), + getHistory(userId)
+### A. Class: UserManager
 
-C. TaskExecutionController  
-- Attributes: - backendAgent: IExternalBackendAgent  
-- Methods: + runCommand(userId, command): ExecutionResult, + scheduleTask(userId, task), + createAutomationRule(userId, rule), + getTaskStatus(taskId), + storeTaskData(task)
+**Role:** Manages user authentication and profile data.
 
-D. AdminController  
-- Methods: + executeAdminCommand(adminId, command), + updateSystemConfig(config), + getSystemLogs(), + manageUsers(action, targetUserId)
+**Attributes:**
+- `- authService: IAuthService` (Private)
 
-2. Entity Classes
+**Methods (Functionalities):**
+- `+ login(credentials: Credentials): AuthStatus` (Public)
+- `+ updateProfile(userId: ID, data: ProfileData): void` (Public)
+- `+ verifyIdentity(token: Token): UserIdentity` (Public)
+- `+ getUserData(userId: ID): User` (Public)
+- `+ storeUserData(user: User): void` (Public)
 
-E. User  
-- + userId: ID, + username: String, + passwordHash: String, + email: String, + profileData: ProfileData, + authStatus: String
+### B. Class: CodingController
 
-F. CodingSession  
-- + sessionId: ID, + userId: ID, + history: List<CodeRequest, CodeResponse>
+**Role:** Handles the core coding assistance logic (processing prompts, generating code).
 
-G. Task  
-- + taskId: ID, + userId: ID, + taskType: Enum, + command: Command, + schedule: Schedule, + status: TaskStatus, + executionResults: Result
+**Attributes:**
+- (None explicitly shown in diagram)
 
-H. File  
-- + fileId: ID, + userId: ID, + filename: String, + path: String, + content: Blob, + metadata: Metadata, + status: FileStatus
+**Methods (Functionalities):**
+- `+ processRequest(userId: ID, prompt: String, context: Context): CodeResponse` (Public)
+- `+ generateCode(...)` (Public)
+- `+ explainCode(...)` (Public)
+- `+ suggestImprovements(...)` (Public)
+- `+ storeHistory(request: CodeRequest, response: CodeResponse): void` (Public)
+- `+ getHistory(userId: ID): CodingHistory` (Public)
 
----
+### C. Class: TaskExecutionController
 
-Notes
-- Diagrams are draft; refine in a modeling tool.  
-- Confirm any missing actors, integrations, or data stores before final submission.
+**Role:** Manages the execution of backend commands and automated tasks.
+
+**Attributes:**
+- `- backendAgent: IExternalBackendAgent` (Private)
+
+**Methods (Functionalities):**
+- `+ runCommand(userId: ID, command: Command): ExecutionResult` (Public)
+- `+ scheduleTask(userId: ID, task: Task): void` (Public)
+- `+ createAutomationRule(userId: ID, rule: AutomationRule): void` (Public)
+- `+ getTaskStatus(taskId: ID): TaskStatus` (Public)
+- `+ storeTaskData(task: Task): void` (Public)
+
+### D. Class: AdminController
+
+**Role:** Handles administrative system operations.
+
+**Attributes:**
+- (None explicitly shown in diagram)
+
+**Methods (Functionalities):**
+- `+ executeAdminCommand(adminId: ID, command: Command): Result` (Public)
+- `+ updateSystemConfig(config: SystemConfig): void` (Public)
+- `+ getSystemLogs(): LogList` (Public)
+- `+ manageUsers(action: Action, targetUserId: ID): void` (Public)
+
+## 2. Entity Classes (The Data)
+These classes represent the objects and data structures stored or manipulated by the system.
+
+### E. Class: User
+
+**Role:** Represents a registered user of the system.
+
+**Attributes:**
+
+- `+ userId: ID (Public)`
+- `+ username: String (Public)`
+- `+ passwordHash: String (Public)`
+- `+ email: String (Public)`
+- `+ profileData: ProfileData (Public)`
+- `+ authStatus: String (Public)`
+
+**Methods: (Primarily a data holder)**
+
+### F. Class: CodingSession
+
+**Role:** Represents a specific session of interaction between user and agent.
+
+**Attributes:**
+
+- `+ sessionId: ID (Public)` 
+- `+ userId: ID (Public)`
+- `+ history: List<CodeRequest, CodeResponse> (Public)`
+
+### G. Class: Task
+
+**Role:** Represents a scheduled or automated task.
+
+**Attributes:**
+
+- `+ taskId: ID (Public)`
+- `+ userId: ID (Public)`
+- `+ taskType: Enum (Public)`
+- `+ command: Command (Public)`
+- `+ schedule: Schedule (Public)`
+- `+ status: TaskStatus (Public)`
+- `+ executionResults: Result (Public)`
+
+### H. Class: File
+
+**Role:** Represents a file uploaded or managed by the user.
+
+**Attributes:**
+
+- `+ fileId: ID (Public)`
+- `+ userId: ID (Public)`
+- `+ filename: String (Public)`
+- `+ path: String (Public)`
+- `+ content: Blob (Public)`
+- `+ metadata: Metadata (Public)`
+- `+ status: FileStatus (Public)`
+
+## 3. Interface Classes
+These define contracts for external services.
+
+### I. Interface: IAuthService
+
+**Methods:**
+- `+ verifyCredentials(credentials: Credentials): AuthStatus (Public)`
+- `+ getAuthToken(): Token (Public)`
+
+### J. Interface: IExternalBackendAgent
+
+**Methods:**
+
+- `+ executeBackendCommand(command: Command): Result (Public)`
+- `+ returnTaskResults(): TaskResults (Public)`
