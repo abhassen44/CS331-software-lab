@@ -1,0 +1,128 @@
+[00:00:01.533] Server  LOG     ✓ Ready in 1121ms
+[00:00:06.866] Server  LOG     ○ Compiling /_not-found/page ...
+[00:00:07.076] Server  ERROR   ⨯ ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/layout'
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+Import map: aliased to relative './src/components/layout' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:09.444] Browser ERROR   uncaughtError: Error: ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/layout'
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+Import map: aliased to relative './src/components/layout' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:09.661] Browser ERROR   ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/layout'
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+Import map: aliased to relative './src/components/layout' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:00:10.349] Browser ERROR   ./src/app/layout.tsx:4:1
+Module not found: Can't resolve '@/components/layout'
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+Import map: aliased to relative './src/components/layout' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found
+[00:01:09.064] Browser ERROR   ./src/app/layout.tsx:4:1
+Export Sidebar doesn't exist in target module
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+The export Sidebar was not found in module [project]/src/components/layout/index.ts [app-rsc] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+[00:01:09.064] Browser ERROR   ./src/app/layout.tsx:4:1
+Export TopNav doesn't exist in target module
+  2 | import { Inter, JetBrains_Mono } from "next/font/google";
+  3 | import "./globals.css";
+> 4 | import { TopNav, Sidebar } from "@/components/layout";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | const inter = Inter({
+  7 |   variable: "--font-inter",
+
+The export TopNav was not found in module [project]/src/components/layout/index.ts [app-rsc] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+[00:01:09.089] Server  LOG     ✓ Compiled in 285ms
+[00:01:10.670] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:11.589] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" className="dark">
+                          <body
+                            className="inter_fe8b9d92-module__LINzvG__variable jetbrains_mono_8dec50e9-module__V6cRDq_..."
+-                           cz-shortcut-listen="true"
+                          >
+                  ...
+
+[00:01:24.354] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:25.608] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:27.274] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
