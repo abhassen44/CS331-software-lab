@@ -86,6 +86,7 @@
 
 ## II. (A) How can your end users access these services?
 
+![alt text](./images/Assign5Q2A.jpeg)
 
 ## II. (B) Draw a pictorial representation showing the interaction between the user and the system (front end), and the interaction between different components, including the backend.
 ![Image](./images/Assign5Q2B.jpeg)
