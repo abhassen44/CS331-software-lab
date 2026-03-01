@@ -3,7 +3,7 @@
 
 ---
 
-## I. How Are You Planning to Host These Application Components? [5 Marks]
+## I. How Are You Planning to Host These Application Components?
 
 ### Host Site (Target Deployment Platform)
 
@@ -84,3 +84,10 @@
 
 ---
 
+## II. (A) How can your end users access these services?
+
+
+## II. (B) Draw a pictorial representation showing the interaction between the user and the system (front end), and the interaction between different components, including the backend.
+![Image](./images/Assign5Q2B.jpeg)
+
+---
