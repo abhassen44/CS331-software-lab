@@ -1,4 +1,6 @@
-beatcode/
+beatcode/frontend/node_modules/
+beatcode/frontend/.next/
+beatcode/backend/__pycache__/
 start/
 .venv
 __pycache__
