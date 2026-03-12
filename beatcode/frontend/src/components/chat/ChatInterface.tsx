@@ -35,11 +35,12 @@ export default function ChatInterface() {
     const [isLoading, setIsLoading] = useState(false);
     const [streamingContent, setStreamingContent] = useState("");
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const [useStreaming, setUseStreaming] = useState(true);
+    const useStreaming = false;
     const [repositories, setRepositories] = useState<Repository[]>([]);
     const [selectedRepoId, setSelectedRepoId] = useState<number | null>(null);
     const [uploadedFiles, setUploadedFiles] = useState<{ name: string, status: 'uploading' | 'success' | 'error' }[]>([]);
     const [showRepoDropdown, setShowRepoDropdown] = useState(false);
+    const [provider, setProvider] = useState<"gemini" | "qwen">("gemini");
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -143,7 +144,7 @@ export default function ChatInterface() {
             if (useStreaming) {
                 let fullContent = "";
                 await apiClient.streamMessage(
-                    { message: currentInput, session_id: sessionId || undefined, history },
+                    { message: currentInput, session_id: sessionId || undefined, history, repository_id: selectedRepoId || undefined, provider },
                     (chunk) => { fullContent += chunk; setStreamingContent(fullContent); },
                     () => {
                         const aiMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: fullContent, timestamp: new Date() };
@@ -175,6 +176,7 @@ export default function ChatInterface() {
                 session_id: sessionId || undefined,
                 history,
                 repository_id: selectedRepoId || undefined,
+                provider,
             });
             setSessionId(response.session_id);
             const aiMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: response.message, timestamp: new Date() };
@@ -246,6 +248,32 @@ export default function ChatInterface() {
                             ✓ RAG enabled
                         </span>
                     )}
+
+                    {/* AI Provider Toggle */}
+                    <button
+                        onClick={() => setProvider(prev => prev === "gemini" ? "qwen" : "gemini")}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border ${provider === "gemini"
+                                ? "bg-[#2EFF7B]/10 text-[#2EFF7B] border-[#2EFF7B]/30 hover:bg-[#2EFF7B]/20"
+                                : "bg-purple-500/10 text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
+                            }`}
+                    >
+                        {provider === "gemini" ? (
+                            <>
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L2 19.5h20L12 2zm0 4l6.5 11.5h-13L12 6z" />
+                                </svg>
+                                Gemini
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                                    <path d="M9 9h6M9 12h6M9 15h3" />
+                                </svg>
+                                Qwen 3.5 (Local)
+                            </>
+                        )}
+                    </button>
                 </div>
             </div>
 
@@ -328,10 +356,6 @@ export default function ChatInterface() {
                         </button>
                         <span className="text-xs text-[#5A7268]">ICA may produce inaccurate information.</span>
                     </div>
-                    <label className="flex items-center gap-2 text-xs text-[#8FAEA2] cursor-pointer">
-                        <input type="checkbox" checked={useStreaming} onChange={(e) => setUseStreaming(e.target.checked)} className="rounded bg-[#1A2420] border-[#1F2D28] text-[#2EFF7B] focus:ring-[#2EFF7B]" />
-                        Stream responses
-                    </label>
                 </div>
             </div>
         </div>
