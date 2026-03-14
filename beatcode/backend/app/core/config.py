@@ -4,34 +4,35 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
-
+    
     # App
     app_name: str = "Intelligent Coding Agent"
     debug: bool = False
-
+    
     # Database
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/auth_module"  # .env: DATABASE_URL
-
+    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/ica"
+    
     # JWT
-    secret_key: str = "your_jwt_secret_key"  # .env: JWT_SECRET_KEY
-    algorithm: str = "HS256"  # .env: JWT_ALGORITHM
-    access_token_expire_minutes: int = 30  # .env: ACCESS_TOKEN_EXPIRE_MINUTES
-    refresh_token_expire_days: int = 7  # .env: REFRESH_TOKEN_EXPIRE_DAYS
-
+    secret_key: str = "your-secret-key-change-in-production"
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 7
+    
     # Gemini AI
-    gemini_api_key: str = ""  # .env: GEMINI_API_KEY
-
+    gemini_api_key: str = "AIzaSyASkkNan6_gAr15Ocy4L7eF9yzY05zq3Wg"
+    
+    github_token: str = ""
     # Vector DB
-    qdrant_host: str = "localhost"  # .env: QDRANT_HOST
-    qdrant_port: int = 6333  # .env: QDRANT_PORT
-    qdrant_collection: str = "ica_code_chunks"  # .env: QDRANT_COLLECTION
-
+    qdrant_host: str = "localhost"
+    qdrant_port: int = 6333
+    qdrant_collection: str = "ica_code_chunks"
+    
     # File Storage
-    file_storage_path: str = "./storage/files"  # .env: FILE_STORAGE_PATH
-
+    file_storage_path: str = "./storage/files"
+    
     # Redis
-    redis_url: str = "redis://localhost:6379"  # .env: REDIS_URL
-
+    redis_url: str = "redis://localhost:6379"
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
