@@ -84,3 +84,6 @@
 
 ---
 
+## II. How can your end users access these services?
+![images](./images/Assign5Q2A.jpeg)
+
