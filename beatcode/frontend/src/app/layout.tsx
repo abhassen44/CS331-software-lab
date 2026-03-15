@@ -26,11 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-950 text-slate-100`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-[#0B0F0E] text-[#E6F1EC] overflow-x-hidden`}
       >
         <TopNav />
         <Sidebar />
-        <main className="ml-56 mt-14 min-h-[calc(100vh-3.5rem)]">
+        {/* Main content - responsive margin for sidebar */}
+        <main className="ml-0 md:ml-56 mt-14 min-h-[calc(100vh-3.5rem)] overflow-x-hidden">
           {children}
         </main>
       </body>

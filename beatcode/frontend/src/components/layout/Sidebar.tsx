@@ -1,126 +1,114 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navItems = [
-    { href: "/chat", icon: "💬", label: "Chat" },
-    { href: "/repository", icon: "📁", label: "Repositories" },
-    { href: "/upload", icon: "📤", label: "Upload Files" },
-    { href: "/execution", icon: "▶️", label: "Execution" },
-    { href: "/tasks", icon: "⚙️", label: "Tasks" },
-    { href: "/history", icon: "🕒", label: "History" },
-    { href: "/admin", icon: "👑", label: "Admin", adminOnly: true },
+    { icon: "💬", label: "Chat", href: "/chat" },
+    { icon: "📁", label: "Repository", href: "/repository" },
+    { icon: "📤", label: "Upload", href: "/upload" },
+];
+
+const recentChats = [
+    { id: 1, title: "Code Review" },
+    { id: 2, title: "React Help" },
+    { id: 3, title: "API Design" },
 ];
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const router = useRouter();
-    const [collapsed, setCollapsed] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // Check login state on mount and when pathname changes
-    useEffect(() => {
-        const token = localStorage.getItem("auth_token");
-        setIsLoggedIn(!!token);
-    }, [pathname]);
-
-    const handleLogout = () => {
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("refresh_token");
-        setIsLoggedIn(false);
-        router.push("/login");
-    };
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     return (
-        <aside
-            className={`fixed left-0 top-14 bottom-0 bg-slate-900 border-r border-slate-700 transition-all duration-300 z-40 flex flex-col ${collapsed ? "w-16" : "w-56"
-                }`}
-        >
-            {/* Auth Status */}
-            <div className={`p-3 border-b border-slate-700 ${collapsed ? "text-center" : ""}`}>
-                {isLoggedIn ? (
-                    <div className="flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-medium">
-                            ✓
-                        </span>
-                        {!collapsed && (
-                            <span className="text-emerald-400 text-sm font-medium">Logged in</span>
-                        )}
-                    </div>
-                ) : (
+        <>
+            {/* Mobile Toggle Button */}
+            <button
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                className="fixed top-4 left-4 z-50 md:hidden w-10 h-10 bg-[#111917] border border-[#1F2D28] rounded-xl flex items-center justify-center"
+            >
+                <svg className="w-5 h-5 text-[#2EFF7B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {isMobileOpen ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    )}
+                </svg>
+            </button>
+
+            {/* Mobile Overlay */}
+            {isMobileOpen && (
+                <div
+                    className="fixed inset-0 bg-black/60 z-30 md:hidden"
+                    onClick={() => setIsMobileOpen(false)}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside className={`fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-56 bg-[#111917] border-r border-[#1F2D28] flex flex-col z-40 transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                {/* New Chat */}
+                <div className="p-4">
                     <Link
-                        href="/login"
-                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                        href="/chat"
+                        className="flex items-center justify-center gap-2 w-full py-3 bg-[#2EFF7B] hover:bg-[#1ED760] text-[#0B0F0E] font-semibold rounded-xl transition-colors"
+                        onClick={() => setIsMobileOpen(false)}
                     >
-                        <span className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-lg">
-                            🔐
-                        </span>
-                        {!collapsed && <span className="text-sm">Sign in</span>}
-                    </Link>
-                )}
-            </div>
-
-            {/* Navigation Items */}
-            <nav className="flex-1 py-4">
-                <ul className="space-y-1 px-2">
-                    {navItems.map((item) => {
-                        const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
-                        return (
-                            <li key={item.href}>
-                                <Link
-                                    href={item.href}
-                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${isActive
-                                        ? "bg-blue-600 text-white"
-                                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                                        }`}
-                                >
-                                    <span className="text-lg">{item.icon}</span>
-                                    {!collapsed && <span className="font-medium">{item.label}</span>}
-                                </Link>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </nav>
-
-            {/* Bottom Section */}
-            <div className="border-t border-slate-700">
-                {/* Logout Button */}
-                {isLoggedIn && (
-                    <button
-                        onClick={handleLogout}
-                        className={`w-full flex items-center gap-3 px-5 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors ${collapsed ? "justify-center" : ""}`}
-                    >
-                        <span className="text-lg">🚪</span>
-                        {!collapsed && <span className="font-medium">Logout</span>}
-                    </button>
-                )}
-
-                {/* Collapse Toggle */}
-                <div className="p-2">
-                    <button
-                        onClick={() => setCollapsed(!collapsed)}
-                        className="w-full flex items-center justify-center p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                        <svg
-                            className={`w-5 h-5 transition-transform ${collapsed ? "rotate-180" : ""}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                            />
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
-                    </button>
+                        New Chat
+                    </Link>
                 </div>
-            </div>
-        </aside>
+
+                {/* Navigation */}
+                <nav className="flex-1 px-3 overflow-y-auto">
+                    <div className="text-xs font-medium text-[#5A7268] uppercase tracking-wider px-3 mb-2">Navigation</div>
+                    <ul className="space-y-1">
+                        {navItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <li key={item.href}>
+                                    <Link
+                                        href={item.href}
+                                        onClick={() => setIsMobileOpen(false)}
+                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${isActive
+                                                ? "bg-[#2EFF7B]/10 text-[#2EFF7B] border border-[#2EFF7B]/30"
+                                                : "text-[#8FAEA2] hover:text-[#E6F1EC] hover:bg-[#1A2420]"
+                                            }`}
+                                    >
+                                        <span className="text-base">{item.icon}</span>
+                                        <span>{item.label}</span>
+                                        {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#2EFF7B]" />}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+
+                    {/* Recent Chats */}
+                    <div className="mt-6">
+                        <div className="text-xs font-medium text-[#5A7268] uppercase tracking-wider px-3 mb-2">Recent</div>
+                        <ul className="space-y-1">
+                            {recentChats.map((chat) => (
+                                <li key={chat.id}>
+                                    <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[#8FAEA2] hover:text-[#E6F1EC] hover:bg-[#1A2420] rounded-xl transition-colors text-left">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#5A7268]" />
+                                        <span className="truncate">{chat.title}</span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </nav>
+
+                {/* Footer */}
+                <div className="p-4 border-t border-[#1F2D28]">
+                    <div className="flex items-center justify-between text-xs text-[#5A7268]">
+                        <span>ICA v1.0</span>
+                        <span className="px-2 py-0.5 bg-[#1A2420] rounded-lg">Phase 3</span>
+                    </div>
+                </div>
+            </aside>
+        </>
     );
 }
-
