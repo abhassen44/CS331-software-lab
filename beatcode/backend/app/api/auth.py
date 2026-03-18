@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 
-from app.api.deps import DbSession
+from app.api.deps import DbSession, CurrentUser
 from app.core.security import create_access_token, create_refresh_token, decode_token
 from app.schemas.auth import UserCreate, UserLogin, UserResponse, Token, TokenRefresh
 from app.services.auth_service import AuthService
@@ -85,8 +85,6 @@ async def refresh_token(token_data: TokenRefresh, db: DbSession):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_info(db: DbSession):
+async def get_current_user_info(current_user: CurrentUser):
     """Get current user information (requires authentication)."""
-    from app.api.deps import get_current_user
-    # This endpoint will be protected by dependency injection
-    pass
+    return current_user

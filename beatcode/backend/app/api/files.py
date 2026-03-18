@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, status, Query
 
 from app.api.deps import DbSession, CurrentUser
 from app.services.file_service import FileService
-# from app.services.rag_service import RAGService  # Module 4: RAG Service
+from app.services.rag_service import RAGService
 from app.schemas.file import (
     FileResponse,
     FileUploadResponse,
@@ -44,14 +44,14 @@ async def upload_file(
         original_path=file.filename
     )
     
-    # Index for RAG if it's a code file (Module 4)
-    # if stored_file.language:
-    #     try:
-    #         rag_service = RAGService(db)
-    #         await rag_service.index_file(stored_file, content.decode('utf-8', errors='ignore'))
-    #     except Exception as e:
-    #         # Don't fail upload if indexing fails
-    #         pass
+    # Index for RAG if it's a code file
+    if stored_file.language:
+        try:
+            rag_service = RAGService(db)
+            await rag_service.index_file(stored_file, content.decode('utf-8', errors='ignore'))
+        except Exception as e:
+            # Don't fail upload if indexing fails
+            pass
     
     return FileUploadResponse(
         file=FileResponse.model_validate(stored_file),

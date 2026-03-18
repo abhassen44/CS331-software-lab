@@ -1,1 +1,1 @@
-# Core module
+# Core __init__.py

@@ -1,30 +1,65 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+*.egg
 *.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environments
 venv/
+env/
+ENV/
+.venv
 .env
-.env.*
+.env.local
+.env.*.local
 
-# VSCode
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
 
-# Node
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Storage
+storage/
+uploads/
+temp/
+
+# Logs
+*.log
+logs/
+
+# Dependencies
 node_modules/
+package-lock.json
+yarn.lock
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
-
-# Test
-.coverage
-htmlcov/
-
-# Misc
-*.sqlite3
-*.db
-*.pid
-*.swp
+# Project specific
+.next/
+dist/
+build/
+*.pyo

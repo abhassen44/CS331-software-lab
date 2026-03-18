@@ -1,4 +1,4 @@
-"""File and Repository models."""
+"""File and Repository models for Phase 3 RAG system."""
 from datetime import datetime
 from typing import Optional, List
 from sqlalchemy import String, DateTime, ForeignKey, Integer, Text, func
