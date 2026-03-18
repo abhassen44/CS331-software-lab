@@ -12,6 +12,7 @@ export interface ChatRequest {
     history?: ChatMessage[];
     repository_id?: number;  // For RAG context injection
     context?: string;        // Pre-fetched context
+    provider?: string;       // "gemini" or "qwen"
 }
 
 export interface ChatResponse {
