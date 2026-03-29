@@ -1,7 +1,7 @@
 # CS 331 — Software Engineering Lab
 ## Assignment 7: Business Logic Layer (BLL)
 **Project:** ICA — Intelligent Coding Agent  
-**Team:** Abhas Sen
+
 
 ---
 
@@ -69,6 +69,85 @@ ICA follows a **3-tier architecture**: Presentation Layer (Next.js frontend) →
                       → GeminiService/QwenService.generate_response(message, context=rag_results)
                         └─ LLM responds with repository-aware answer
 ```
+
+---
+## Q2A. Business Rules Implementation [10 Marks]
+
+### 1. Authentication & Authorization Rules
+
+**Rule: Only authenticated users can access protected resources.**
+- Implementation: Every protected API endpoint uses `Depends(get_current_user)` (FastAPI dependency injection)
+- JWT tokens have a `type` field — only `access` tokens are accepted for API calls
+- Inactive users (`is_active=False`) are rejected with `403 Forbidden`
+
+**Rule: Admin-only endpoints require admin role.**
+```python
+# deps.py
+async def get_current_admin_user(current_user):
+    if current_user.role != UserRole.ADMIN.value:
+        raise HTTPException(status_code=403, detail="Admin access required")
+```
+
+**Rule: Users can only access their own resources.**
+```python
+# workspace_service.py — ownership check
+async def _get_owned(self, workspace_id, user_id):
+    result = await self.db.execute(
+        select(Workspace).where(
+            Workspace.id == workspace_id,
+            Workspace.user_id == user_id,  # ownership enforced
+        )
+    )
+```
+
+### 2. Code Execution Security Rules
+
+**Rule: Only supported languages are allowed.**
+```python
+LANGUAGE_IMAGES = {"python": "python:3.12-slim", "javascript": "node:20-slim", "cpp": "gcc:14", "java": "eclipse-temurin:21"}
+if language not in LANGUAGE_IMAGES:
+    return Execution(status="error", stderr=f"Unsupported language: {language}")
+```
+
+**Rule: Execution is sandboxed with strict resource limits.**
+- Network disabled (`network_disabled=True`)
+- Memory limited (`mem_limit="256m"`)
+- CPU throttled (`cpu_quota=50000`)
+- Timeout enforced (default 10s, max 30s)
+- Output capped at 50KB
+
+### 3. Workspace Lifecycle Rules
+
+**Rule: Workspace status state machine** — `creating → running ↔ stopped → destroyed`
+```python
+async def start_workspace(self, workspace_id, user_id):
+    if workspace.status == "running":
+        return workspace  # idempotent — already running
+    if not workspace.container_id:
+        raise ValueError("No container associated")
+```
+
+**Rule: Cannot delete workspace root directory.**
+```python
+if full_path.rstrip("/") == workspace.work_dir.rstrip("/"):
+    raise ValueError("Cannot delete workspace root directory")
+```
+
+### 4. Agent Intelligence Rules
+
+**Rule: Smart model routing** — Large context → Qwen (local), Small context → Gemini (API).
+```python
+use_qwen = (provider == "qwen" or (provider == "auto" and context_size > GEMINI_TOKEN_THRESHOLD))
+```
+
+**Rule: Agent must explore before concluding** — If the agent tries to answer without calling any exploration tools, it gets nudged back with a system message.
+```python
+if not has_explored and nudge_count < MAX_NUDGES:
+    nudge_msg = "STOP — you have NOT explored the workspace yet. Call list_files('.') first..."
+    return {"messages": [response, HumanMessage(content=nudge_msg)]}
+```
+
+**Rule: Iteration safety limit** — Maximum 20 agent iterations to prevent runaway loops.
 
 ---
 
@@ -212,3 +291,4 @@ ExecuteResponse(
 | Qdrant search results | LLM context string | Formatted code snippets with file paths |
 
 ---
+
