@@ -151,6 +151,90 @@ if not has_explored and nudge_count < MAX_NUDGES:
 
 ---
 
+## Q2B. Validation Logic [10 Marks]
+
+Validation is implemented at **two levels**: Pydantic schema validation (declarative) and service-level business validation (programmatic).
+
+### 1. Pydantic Schema Validation (Input Layer)
+
+All API inputs are validated through Pydantic models before they reach the BLL.
+
+**User Registration:**
+```python
+class UserCreate(UserBase):
+    email: EmailStr                    # Must be valid email format
+    password: str = Field(..., min_length=8)  # Minimum 8 characters
+```
+
+**Code Execution:**
+```python
+class ExecuteRequest(BaseModel):
+    code: str = Field(...)                          # Required, non-empty
+    language: str = Field(...)                       # Required
+    timeout: Optional[int] = Field(10, ge=1, le=30)  # Range: 1-30 seconds
+```
+
+**Agent Request:**
+```python
+class AgentRequest(BaseModel):
+    workspace_id: int                                    # Required integer
+    prompt: str = Field(..., min_length=1, max_length=4000)  # 1-4000 chars
+    provider: Optional[Literal["auto", "gemini", "qwen",
+        "hf-qwen-7b", "hf-qwen-35b", "hf-llama-8b", "hf-llama-70b"]]  # Enum validation
+```
+
+**File Operations:**
+```python
+class FileWriteRequest(BaseModel):
+    path: str = Field(..., description="File path relative to workspace root")  # Required
+    content: str = Field(...)  # Required
+```
+
+### 2. Service-Level Business Validation
+
+**Path Traversal Prevention:**
+```python
+@staticmethod
+def _resolve_path(work_dir, relative_path):
+    clean = relative_path.replace("\\", "/").strip("/")
+    if ".." in clean.split("/"):
+        raise ValueError("Path traversal is not allowed")  # Prevents ../../etc/passwd attacks
+```
+
+**JWT Token Validation (deps.py):**
+```python
+payload = decode_token(token)
+if payload is None:        → 401 "Invalid or expired token"
+if type != "access":       → 401 "Invalid token type"
+if user_id is None:        → 401 "Invalid token payload"
+if not user.is_active:     → 403 "User is inactive"
+```
+
+**Docker Availability Validation:**
+```python
+if self.docker_client is None:
+    return Execution(status="error", stderr="Docker is not available. Please ensure Docker Desktop is running.")
+```
+
+**Workspace State Validation:**
+```python
+async def _get_running(self, workspace_id, user_id):
+    if not workspace:           → ValueError("Workspace not found")
+    if status != "running":     → ValueError("Workspace is not running")
+    if not container_id:        → ValueError("No container associated")
+```
+
+### Summary of Validation Points
+
+| Layer | What is Validated | How |
+|-------|------------------|-----|
+| **Pydantic** | Email format, password length, timeout range, enum values, required fields | `EmailStr`, `Field(min_length=...)`, `Literal[...]` |
+| **Auth** | JWT validity, token type, user existence, active status | `decode_token()`, DB lookup, status check |
+| **Workspace** | Ownership, container state, path traversal | SQL WHERE clauses, status checks, `..` detection |
+| **Execution** | Language support, Docker availability, timeout bounds | Dict lookup, client check, Pydantic [ge](file:///c:/Users/Abhas/OneDrive/Desktop/coding/coding_Agent/coding-agent/backend/app/services/agent_service.py#114-117)/[le](file:///c:/Users/Abhas/OneDrive/Desktop/coding/coding_Agent/coding-agent/frontend/src/app/workspace/%5Bid%5D/page.tsx#29-35) |
+| **Agent** | Model availability, API key presence, iteration limits | Try/except, env var check, counter |
+
+---
 
 
 
