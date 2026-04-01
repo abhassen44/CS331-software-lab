@@ -23,3 +23,29 @@
 | `test_execution_service_internals.py` | `app/services/execution_service.py` | 23 | Language validation, Docker container lifecycle, timeout detection, stdin piping, history pagination |
 
 ---
+---
+
+### Black Box Tests (71 tests across 3 files)
+
+| File | API Endpoint | Tests | Key Areas |
+|------|-------------|-------|-----------|
+| `test_auth_api.py` | `/api/v1/auth/*` | 25 | Register (201/409/422), Login (200/401), Refresh (200/401), /me (200/401) |
+| `test_workspace_api.py` | `/api/v1/workspaces/*` | 28 | CRUD lifecycle (200/201/404/422), file operations, path traversal rejection |
+| `test_execution_api.py` | `/api/v1/execute/*` | 18 | Run code (200/422), history pagination, get by ID (200/404), diagnose (200/400/404) |
+
+---
+
+### Test Results
+
+```
+collected 158 items
+test_cases\white_box\  .... 87 passed
+test_cases\black_box\  .... 71 passed
+============================ 158 passed in 38.28s =============================
+```
+
+| Suite | Files | Tests | Result |
+|-------|-------|-------|--------|
+| White Box | 4 | 87 | ✅ All Pass |
+| Black Box | 3 | 71 | ✅ All Pass |
+| **Total** | **7** | **158** | **✅ 158/158** |
