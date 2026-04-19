@@ -77,3 +77,111 @@ The **Workspace Service** (`app/services/workspace_service.py`) is selected as t
 | 10 | WB-WS-20 | `_check_container_status`: Docker status `"running"` maps to internal `"running"` | Mock container with `status="running"` | Returns `"running"` | Returns `"running"` | **Pass** |
 
 ---
+## Q2. a) Test Execution Results with Evidence [5 Marks]
+
+### Execution Command
+
+```
+.\venv\Scripts\python.exe -m pytest test_cases/white_box test_cases/black_box -v --tb=short
+```
+
+### Test Results Summary
+
+```
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Abhas\OneDrive\Desktop\coding\coding_Agent\coding-agent\backend
+configfile: pytest.ini
+plugins: anyio-4.12.1, langsmith-0.7.22, asyncio-1.3.0, cov-7.1.0
+asyncio: mode=Mode.AUTO
+collected 160 items
+
+test_cases/white_box/test_auth_service_internals.py     17 passed  [ 10%]
+test_cases/white_box/test_execution_service_internals.py 23 passed [ 25%]
+test_cases/white_box/test_security_internals.py          25 passed [ 40%]
+test_cases/white_box/test_workspace_service_internals.py 22 passed [ 54%]
+test_cases/black_box/test_auth_api.py                    25 passed [ 70%]
+test_cases/black_box/test_execution_api.py               18 passed [ 82%]
+test_cases/black_box/test_workspace_api.py               28 passed [100%]
+
+============================ 160 passed in 40.20s =============================
+```
+
+### Detailed Pass/Fail Breakdown by Module
+
+| Test File | Category | Tests | Passed | Failed | Pass Rate |
+|---|---|---|---|---|---|
+| `test_auth_service_internals.py` | White Box | 17 | 17 | 0 | 100% |
+| `test_execution_service_internals.py` | White Box | 23 | 23 | 0 | 100% |
+| `test_security_internals.py` | White Box | 25 | 25 | 0 | 100% |
+| `test_workspace_service_internals.py` | White Box | 22 | 22 | 0 | 100% |
+| `test_auth_api.py` | Black Box | 25 | 25 | 0 | 100% |
+| `test_execution_api.py` | Black Box | 18 | 18 | 0 | 100% |
+| `test_workspace_api.py` | Black Box | 28 | 28 | 0 | 100% |
+| **TOTAL** | | **160** | **160** | **0** | **100%** |
+
+### Evidence Log (Verbose Output — Selected Lines)
+
+```
+test_cases/white_box/test_auth_service_internals.py::TestGetUserByEmail::test_wb_auth_01_returns_user_when_exists PASSED
+test_cases/white_box/test_auth_service_internals.py::TestGetUserByEmail::test_wb_auth_02_returns_none_when_missing PASSED
+test_cases/white_box/test_auth_service_internals.py::TestAuthenticateUser::test_wb_auth_14_returns_none_when_user_not_found PASSED
+test_cases/white_box/test_auth_service_internals.py::TestAuthenticateUser::test_wb_auth_17_happy_path_returns_user PASSED
+test_cases/white_box/test_execution_service_internals.py::TestRunInContainer::test_wb_ex_12_success_path PASSED
+test_cases/white_box/test_execution_service_internals.py::TestRunInContainer::test_wb_ex_14_timeout_detected PASSED
+test_cases/white_box/test_security_internals.py::TestGetPasswordHash::test_wb_sec_03_salted_uniqueness PASSED
+test_cases/white_box/test_security_internals.py::TestDecodeToken::test_wb_sec_23_expired_token_returns_none PASSED
+test_cases/white_box/test_workspace_service_internals.py::TestResolvePath::test_wb_ws_06_dotdot_raises_value_error PASSED
+test_cases/white_box/test_workspace_service_internals.py::TestDeleteFileGuard::test_wb_ws_14_cannot_delete_workspace_root PASSED
+test_cases/black_box/test_auth_api.py::TestRegisterEndpoint::test_bb_auth_01_register_success_returns_201 PASSED
+test_cases/black_box/test_auth_api.py::TestLoginEndpoint::test_bb_auth_11_wrong_password_returns_401 PASSED
+test_cases/black_box/test_execution_api.py::TestExecuteRun::test_bb_ex_01_run_python_returns_200 PASSED
+test_cases/black_box/test_workspace_api.py::TestWorkspaceCreate::test_bb_ws_01_create_with_repo_url_returns_200 PASSED
+test_cases/black_box/test_workspace_api.py::TestWorkspaceFileOps::test_bb_ws_28_delete_file_error_returns_400 PASSED
+```
+
+---
+
+## Q2. b) Defect / Bug Report [5 Marks]
+
+### BUG-001: JSONB Column Type Incompatible with SQLite Test Database
+
+| Field | Details |
+|---|---|
+| **Bug ID** | BUG-001 |
+| **Description** | The `ActivityLog` model uses `JSONB` (PostgreSQL-specific type) for its `metadata` column. When the test suite creates an in-memory SQLite database via `Base.metadata.create_all()`, SQLite's compiler cannot render the `JSONB` type, causing **all 110 black-box tests to fail** with a `CompileError` during fixture setup. |
+| **Steps to Reproduce** | 1. Run `pytest test_cases/black_box -v`. 2. Observe all tests fail with `sqlalchemy.exc.CompileError: (in table 'activity_logs', column 'metadata'): Compiler can't render element of type JSONB`. |
+| **Expected Result** | All black-box tests should pass with the in-memory SQLite database, since `JSONB` fields should be portable across database backends. |
+| **Actual Result** | 110 out of 160 tests fail at the database setup phase. Zero black-box tests can run. |
+| **Severity** | **High** — Blocks entire black-box test suite. |
+| **Suggested Fix** | Replace `from sqlalchemy.dialects.postgresql import JSONB` with `from sqlalchemy import JSON` and change the column definition from `JSONB` to `JSON`. SQLAlchemy's generic `JSON` type maps to `JSON` on PostgreSQL and `TEXT` on SQLite, maintaining compatibility with both. **Fix was applied and verified** — all 160 tests now pass. |
+
+---
+
+### BUG-002: JWT `additional_claims` Can Overwrite Core Token Fields
+
+| Field | Details |
+|---|---|
+| **Bug ID** | BUG-002 |
+| **Description** | The `create_access_token()` function in `core/security.py` merges `additional_claims` into the JWT payload using `dict.update()`. This allows callers to overwrite protected fields like `type`, `sub`, and `exp`, potentially escalating privileges (e.g., changing `type` from `"access"` to `"superuser"`). |
+| **Steps to Reproduce** | 1. Call `create_access_token(subject=1, additional_claims={"type": "superuser"})`. 2. Decode the resulting JWT. 3. Observe `payload["type"] == "superuser"` instead of `"access"`. |
+| **Expected Result** | Core fields (`type`, `sub`, `exp`) should be immutable and protected from overwrite by `additional_claims`. The function should either raise an error or silently ignore attempts to overwrite reserved keys. |
+| **Actual Result** | The `type` field is overwritten to `"superuser"`, bypassing the intended token-type distinction between access and refresh tokens. |
+| **Severity** | **Medium** — Security vulnerability if untrusted input reaches `additional_claims`. Currently mitigated by the fact that only server-side code calls this function. |
+| **Suggested Fix** | Apply `additional_claims` *before* setting core fields, or explicitly remove reserved keys: `for k in ("type", "sub", "exp"): additional_claims.pop(k, None)` before merging. |
+
+---
+
+### BUG-003: bcrypt Password Length Limit Not Enforced at Application Layer
+
+| Field | Details |
+|---|---|
+| **Bug ID** | BUG-003 |
+| **Description** | The `get_password_hash()` function in `core/security.py` passes passwords directly to bcrypt without length validation. bcrypt has a hard limit of 72 bytes for input passwords. The current bcrypt library raises a `ValueError` for passwords exceeding 72 bytes, which is an unhandled exception that would result in a **500 Internal Server Error** during user registration. |
+| **Steps to Reproduce** | 1. Send a POST request to `/api/v1/auth/register` with a password that is 73+ ASCII characters long (e.g., `"A" * 73`). 2. Observe an unhandled `ValueError` from bcrypt. |
+| **Expected Result** | The application should validate password length before hashing and return a `400 Bad Request` with a clear error message (e.g., "Password must be 72 characters or fewer"). |
+| **Actual Result** | An unhandled `ValueError` propagates up, resulting in a `500 Internal Server Error` with no user-friendly message. Test `WB-SEC-06` documents this behaviour. |
+| **Severity** | **Low** — Passwords of 73+ characters are rare in practice, but the unhandled error violates user experience standards and leaks implementation details in error responses. |
+| **Suggested Fix** | Add a `max_length=72` validator to the `password` field in the `UserCreate` Pydantic schema, or add a length check in `get_password_hash()`: `if len(password.encode("utf-8")) > 72: raise ValueError("Password too long")`. |
+
+---
