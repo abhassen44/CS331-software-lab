@@ -19,12 +19,10 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 30
     
     # Gemini AI
-    gemini_api_key: str = "AIzaSyASkkNan6_gAr15Ocy4L7eF9yzY05zq3Wg"
+    gemini_api_key: str = ""
     
-    # AWS Bedrock
-    aws_access_key_id: str = ""
-    aws_secret_access_key: str = ""
-    aws_region: str = "ap-south-1"
+    # HuggingFace
+    hf_api_token: str = ""
     
     github_token: str = ""
     # Vector DB
@@ -45,6 +43,9 @@ class Settings(BaseSettings):
     
     # Workspace
     workspace_base_image: str = "node:20-bookworm"
+
+    # Admin bootstrap — set ADMIN_EMAIL env var to auto-promote that user to ADMIN on login
+    admin_email: str = ""
     
     class Config:
         env_file = ".env"
