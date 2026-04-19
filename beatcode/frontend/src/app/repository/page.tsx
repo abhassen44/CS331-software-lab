@@ -138,12 +138,31 @@ export default function RepositoryPage() {
         if (!token) return;
         try {
             const response = await fetch(
-                `${API_BASE}/repo/${selectedRepo.id}/search?query=${encodeURIComponent(searchQuery)}`,
-                { headers: { Authorization: `Bearer ${token}` } }
+                `${API_BASE}/repo/${selectedRepo.id}/search`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: searchQuery, top_k: 5 }),
+                }
             );
             if (response.ok) {
                 const data = await response.json();
-                setSearchResults(data.results || []);
+                const allChunks: ChunkResult[] = data.chunks || [];
+                // Deduplicate: keep only the highest-scored chunk per file
+                const seen = new Map<string, ChunkResult>();
+                for (const chunk of allChunks) {
+                    const key = chunk.file_path || String(chunk.file_id);
+                    const existing = seen.get(key);
+                    if (!existing || chunk.relevance_score > existing.relevance_score) {
+                        seen.set(key, chunk);
+                    }
+                }
+                setSearchResults(Array.from(seen.values()));
+            } else {
+                setError('Search failed');
             }
         } catch (err) {
             setError('Search failed');
@@ -250,6 +269,40 @@ export default function RepositoryPage() {
 
                         {showActionsDropdown && (
                             <div className="absolute top-full left-0 mt-2 w-48 bg-[#111917] border border-[#1F2D28] rounded-xl shadow-xl z-50 py-1">
+                                <button
+                                    onClick={async () => {
+                                        if (!selectedRepo) return;
+                                        const token = getToken();
+                                        if (!token) return;
+                                        setShowActionsDropdown(false);
+                                        try {
+                                            const res = await fetch(`${API_BASE}/workspace/create`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    Authorization: `Bearer ${token}`,
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({ repo_id: selectedRepo.id }),
+                                            });
+                                            if (res.ok) {
+                                                const data = await res.json();
+                                                window.location.href = `/workspace/${data.id}`;
+                                            } else {
+                                                const err = await res.json().catch(() => ({}));
+                                                setError(err.detail || 'Failed to create workspace');
+                                            }
+                                        } catch (err) {
+                                            setError('Failed to create workspace');
+                                        }
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#2EFF7B] hover:bg-[#2EFF7B]/10 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    Open Workspace
+                                </button>
+                                <hr className="my-1 border-[#1F2D28]" />
                                 <button
                                     onClick={async () => {
                                         if (!selectedRepo) return;
