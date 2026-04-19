@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { apiClient, WorkspaceResponse, FileNode } from '@/lib/api';
+import { apiClient, WorkspaceResponse, FileNode, getErrorMessage } from '@/lib/api';
 import { FileExplorer } from '@/components/workspace/FileExplorer';
 import { EditorTabs, EditorTab } from '@/components/workspace/EditorTabs';
 import { CodeEditor } from '@/components/workspace/CodeEditor';
@@ -33,6 +33,10 @@ interface OpenFile {
     language?: string;
 }
 
+interface FileChangeOptions {
+    refreshOpenEditors?: boolean;
+}
+
 export default function WorkspacePage() {
     const params = useParams();
     const router = useRouter();
@@ -46,10 +50,13 @@ export default function WorkspacePage() {
     // File system state
     const [fileTree, setFileTree] = useState<FileNode[]>([]);
     const [isLoadingFiles, setIsLoadingFiles] = useState(false);
+    const [explorerRefreshKey, setExplorerRefreshKey] = useState(0);
 
     // Editor state
     const [openFiles, setOpenFiles] = useState<Record<string, OpenFile>>({});
     const [activePath, setActivePath] = useState<string | null>(null);
+    const openFilesRef = useRef(openFiles);
+    openFilesRef.current = openFiles;
 
     const [showTerminal, setShowTerminal] = useState(false);
 
@@ -135,20 +142,6 @@ export default function WorkspacePage() {
     const statusRef = React.useRef(status);
     statusRef.current = status;
 
-    const fetchWorkspace = useCallback(async (silent = false) => {
-        try {
-            if (!silent) setStatus('loading');
-            const data = await apiClient.getWorkspace(id);
-            setWorkspace(data);
-            setStatus(data.status);
-            return data;
-        } catch (err: any) {
-            setError(err.detail || 'Failed to load workspace');
-            setStatus('error');
-            return null;
-        }
-    }, [id]);
-
     const fetchFiles = useCallback(async (path: string = '.') => {
         // Use ref instead of state to avoid dependency changes
         if (statusRef.current !== 'running') return [];
@@ -157,10 +150,11 @@ export default function WorkspacePage() {
             const data = await apiClient.listWorkspaceFiles(id, path);
             if (path === '.') {
                 setFileTree(data.entries);
+                setExplorerRefreshKey((prev) => prev + 1);
             }
             return data.entries;
-        } catch (err: any) {
-            console.error('Failed to load files:', err);
+        } catch (error) {
+            console.error('Failed to load files:', error);
             return [];
         } finally {
             setIsLoadingFiles(false);
@@ -172,8 +166,8 @@ export default function WorkspacePage() {
         try {
             const data = await apiClient.listWorkspaceFiles(id, path);
             return data.entries;
-        } catch (err: any) {
-            console.error('Failed to fetch children:', err);
+        } catch (error) {
+            console.error('Failed to fetch children:', error);
             return [];
         }
     }, [id]);
@@ -211,7 +205,7 @@ export default function WorkspacePage() {
                                     if (isMounted) setFileTree(files.entries);
                                 }
                             }
-                        } catch (err) {
+                        } catch {
                             // Silently ignore poll errors
                         }
                     }, 3000);
@@ -219,9 +213,9 @@ export default function WorkspacePage() {
                     const files = await apiClient.listWorkspaceFiles(id, '.');
                     if (isMounted) setFileTree(files.entries);
                 }
-            } catch (err: any) {
+            } catch (error) {
                 if (isMounted) {
-                    setError(err.detail || 'Failed to load workspace');
+                    setError(getErrorMessage(error, 'Failed to load workspace'));
                     setStatus('error');
                 }
             }
@@ -233,7 +227,6 @@ export default function WorkspacePage() {
             isMounted = false;
             if (pollInterval) clearInterval(pollInterval);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     // --- Workspace Actions ---
@@ -260,8 +253,8 @@ export default function WorkspacePage() {
                 await apiClient.destroyWorkspace(id);
                 router.push('/repository');
             }
-        } catch (err: any) {
-            setError(err.detail || `Failed to ${action} workspace`);
+        } catch (error) {
+            setError(getErrorMessage(error, `Failed to ${action} workspace`));
             setStatus('error');
         }
     };
@@ -290,8 +283,8 @@ export default function WorkspacePage() {
                 }
             }));
             setActivePath(node.path);
-        } catch (err: any) {
-            alert(err.detail || 'Failed to read file');
+        } catch (error) {
+            alert(getErrorMessage(error, 'Failed to read file'));
         }
     };
 
@@ -316,8 +309,8 @@ export default function WorkspacePage() {
                 }));
                 setActivePath(newPath);
             }
-        } catch (err: any) {
-            alert(err.detail || `Failed to create ${isDir ? 'folder' : 'file'}`);
+        } catch (error) {
+            alert(getErrorMessage(error, `Failed to create ${isDir ? 'folder' : 'file'}`));
         }
     };
 
@@ -327,11 +320,11 @@ export default function WorkspacePage() {
             await apiClient.deleteWorkspaceFile(id, path);
             fetchFiles('.');
             
-            if (openFiles[path]) {
-                handleTabClose(path);
+            if (openFilesRef.current[path]) {
+                closeFileSilently(path);
             }
-        } catch (err: any) {
-            alert(err.detail || 'Failed to delete');
+        } catch (error) {
+            alert(getErrorMessage(error, 'Failed to delete'));
         }
     };
 
@@ -365,10 +358,25 @@ export default function WorkspacePage() {
             // Show save toast
             setShowSaveToast(true);
             setTimeout(() => setShowSaveToast(false), 2000);
-        } catch (err: any) {
-            alert(err.detail || 'Failed to save file');
+        } catch (error) {
+            alert(getErrorMessage(error, 'Failed to save file'));
         }
     };
+
+    const closeFileSilently = useCallback((path: string) => {
+        setOpenFiles(prev => {
+            if (!prev[path]) return prev;
+            const next = { ...prev };
+            delete next[path];
+            return next;
+        });
+
+        setActivePath(prev => {
+            if (prev !== path) return prev;
+            const remaining = Object.keys(openFilesRef.current).filter(p => p !== path);
+            return remaining.length > 0 ? remaining[remaining.length - 1] : null;
+        });
+    }, []);
 
     const handleTabClose = (path: string) => {
         const file = openFiles[path];
@@ -378,17 +386,52 @@ export default function WorkspacePage() {
             }
         }
 
-        setOpenFiles(prev => {
-            const next = { ...prev };
-            delete next[path];
-            return next;
-        });
-
-        if (activePath === path) {
-            const remaining = Object.keys(openFiles).filter(p => p !== path);
-            setActivePath(remaining.length > 0 ? remaining[remaining.length - 1] : null);
-        }
+        closeFileSilently(path);
     };
+
+    const handleFileChanged = useCallback(async (
+        changedPaths?: string[],
+        options: FileChangeOptions = {}
+    ) => {
+        await fetchFiles('.');
+
+        const pathsToRefresh = new Set<string>();
+
+        if (options.refreshOpenEditors || !changedPaths || changedPaths.length === 0) {
+            Object.keys(openFilesRef.current).forEach((path) => pathsToRefresh.add(path));
+        }
+
+        if (changedPaths && changedPaths.length > 0) {
+            for (const path of changedPaths) {
+                if (openFilesRef.current[path]) {
+                    pathsToRefresh.add(path);
+                }
+            }
+        }
+
+        await Promise.all(Array.from(pathsToRefresh).map(async (path) => {
+            try {
+                const data = await apiClient.readWorkspaceFile(id, path);
+                setOpenFiles(prev => {
+                    if (!prev[path]) return prev;
+                    return {
+                        ...prev,
+                        [path]: {
+                            ...prev[path],
+                            content: data.content,
+                            originalContent: data.content,
+                            language: data.language
+                        }
+                    };
+                });
+            } catch (error) {
+                console.error(`Failed to refresh file ${path}:`, error);
+                if (openFilesRef.current[path]) {
+                    closeFileSilently(path);
+                }
+            }
+        }));
+    }, [id, fetchFiles, closeFileSilently]);
 
     // --- Render Helpers ---
 
@@ -572,6 +615,7 @@ export default function WorkspacePage() {
                                         </div>
                                     ) : null}
                                     <FileExplorer 
+                                        key={explorerRefreshKey}
                                         entries={fileTree}
                                         onFileSelect={handleFileSelect}
                                         selectedPath={activePath || undefined}
@@ -644,7 +688,7 @@ export default function WorkspacePage() {
                                             isVisible={showAI}
                                             activeFilePath={activePath}
                                             openFilePaths={Object.keys(openFiles)}
-                                            onFileChanged={() => fetchFiles('.')}
+                                            onFileChanged={handleFileChanged}
                                         />
                                     </div>
                                 </>

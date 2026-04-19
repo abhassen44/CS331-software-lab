@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Dependencies
+# dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -9,75 +9,33 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
-# Testing
+# testing
 /coverage
-.nyc_output
 
-# Next.js
+# next.js
 /.next/
 /out/
-.next/
 
-# Production
+# production
 /build
-dist/
 
-# Misc
+# misc
 .DS_Store
 *.pem
-.env.local
-.env.*.local
 
-# Debug
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-lerna-debug.log*
 
-# Environment files
-.env
-.env.production
-.env.development
-.env.test
+# env files (can opt-in for committing if needed)
+.env*
 
-# Deployment
+# vercel
 .vercel
-.netlify
 
-# TypeScript
+# typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-.DS_Store
-
-# Temporary files
-*.tmp
-*.temp
-tmp/
-temp/
-
-# OS
-Thumbs.db
-.AppleDouble
-.LSOverride
-
-# Cache
-.eslintcache
-.stylelintcache
